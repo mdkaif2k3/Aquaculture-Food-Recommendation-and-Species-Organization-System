@@ -1,6 +1,0 @@
-habitat_id,habitat_type,temp_min,temp_max,salinity,oxygen_level
-1,Pond,20,30,Low,Medium
-2,River,18,28,Low,High
-3,Lake,15,25,Low,Medium
-4,Estuary,22,32,Medium,Medium
-5,Coastal Lagoon,24,34,High,High
