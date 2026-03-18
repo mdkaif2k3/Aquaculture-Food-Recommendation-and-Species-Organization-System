@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+<div class="fish-details-page">
+  <div class="hero">
+    <h1>Fish Details</h1>
+  </div>
+  <section class="fish-details-card fadeup">
+    <div class="fish-detail-header">
+
+      <div class="fish-detail-image">
+        <img src="{{ fish.fish_img.url }}" alt="{{ fish.common_name }}">
+      </div>
+
+      <div class="fish-detail-info">
+        <h2>{{ fish.common_name }}</h2>
+        <p class="scientific-name">{{ fish.scientific_name }}</p>
+
+        <ul class="fish-meta-list">
+          <li><strong>Taxonomy:</strong> {{ fish.taxonomy_family }}</li>
+          <li><strong>Habitat:</strong> {{ fish.habitat }}</li>
+          <li><strong>Water Type:</strong> {{ fish.water_type }}</li>
+          <li><strong>Threat Status:</strong> {{ fish.threatened_status }}</li>
+        </ul>
+        <h2>About this Fish</h2>
+        {% if fish.description %}
+          <p class="fish-description">
+            {{ fish.description }}
+          </p>
+        {% else %}
+          <p class="fish-description muted">
+            No description available for this species.
+          </p>
+        {% endif %}
+        <a href="{% url 'recommend' history.id fish.id %}" class="btn recommend-btn">
+          Get Recommendation
+        </a>
+      </div>
+    </div>
+
+    <h2>Ecological Relationships</h2>
+    <p class="section-subtext">
+      This graph shows the habitat, food chain, and related species connections
+      for <strong>{{ fish.common_name }}</strong>.
+    </p>
+
+    <div id="fishRelationshipGraph" class="graph-container">
+      {{ nodes|json_script:"graph-nodes" }}
+      {{ edges|json_script:"graph-edges" }}
+    </div>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="{% static 'js/fish_relationship_graph.js' %}"></script>
+    
+  </section>
+
+</div>
+{% endblock %}

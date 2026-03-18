@@ -1,0 +1,183 @@
+{% extends 'base.html' %} 
+
+{% block content %} 
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+
+<div class="home">
+  <!-- Hero Section -->
+  <section class="hero card fadeup">
+    <h1>Aquaculture Decision Support System</h1>
+    <p class="subtitle">
+      Data-driven insights for fish species, habitats, and optimal feed
+      recommendations
+    </p>
+    <div class="hero-carousel">
+      <div class="carousel-track">
+        <img
+          src="{% static 'img/carou-1.jpg' %}"
+          class="carousel-slide active"
+        />
+        <img src="{% static 'img/carou-2.jpg' %}" class="carousel-slide" />
+        <img src="{% static 'img/carou-3.jpg' %}" class="carousel-slide" />
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <a href="{% url 'fish_list' %}" class="btn">Explore Fish</a>
+      <a href="{% url 'request_log' %}" class="btn">View Orders</a>
+    </div>
+  </section>
+
+  <!-- About Aquaculture -->
+  <section class="card fadeup">
+    <div class="card-interior">
+      <div class="text-section">
+        <h2>About Aquaculture</h2>
+        <p>
+          Aquaculture refers to the controlled cultivation of aquatic organisms
+          such as fish, crustaceans, and aquatic plants in freshwater, brackish,
+          or marine environments. As global demand for fish continues to rise,
+          aquaculture has become one of the fastest-growing food production
+          sectors, playing a critical role in food security and sustainable
+          protein supply.
+        </p>
+        <p>
+          This project aims to address these challenges by combining structured
+          data management, graph-based visualization, and a data-driven
+          recommendation system. The system provides a unified platform where
+          users can explore fish species, understand their ecological
+          relationships, and receive informed food recommendations based on
+          farming conditions.
+        </p>
+        <p>
+          By integrating data from multiple sources and applying analytical
+          techniques such as Linear Discriminant Analysis (LDA), the platform
+          supports better decision-making for aquaculture practitioners. Instead
+          of relying solely on experience or trial-and-error, farmers can use
+          data-backed insights to choose suitable feed, improve fish health, and
+          optimize overall productivity.
+        </p>
+      </div>
+      <div class="img-card">
+        <img src="{% static 'img/about.jpg' %}" class="img-inside" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Data Overview -->
+  <section class="stats-row fadeup">
+      <div class="stat-card">
+        <div class="stat-img-card">
+          <img src="{% static 'img/stat-1.jpg' %}" class="img-inside" />
+        </div>
+        <h4>50+ Fish Species</h4>
+      </div>
+      <div class="stat-card">
+        <div class="stat-img-card">
+          <img src="{% static 'img/stat-2.jpg' %}" class="img-inside" />
+        </div>
+        <h4>3 Water Types</h4>
+      </div>
+      <div class="stat-card">
+        <div class="stat-img-card">
+          <img src="{% static 'img/stat-3.jpg' %}" class="img-inside" />
+        </div>
+        <h4>5 Habitat Types</h4>
+      </div>
+      <div class="stat-card">
+        <div class="stat-img-card">
+          <img src="{% static 'img/stat-4.jpg' %}" class="img-inside" />
+        </div>
+        <h4>7 Food Varieties</h4>
+      </div>
+  </section>
+
+  <!-- Habitat Chart -->
+  <section class="card fadeup">
+    <h2>Fish Distribution Charts</h2>
+    <p class="text-muted">
+      Overview of fish species across different water environments
+    </p>
+    <div class="chart">
+      <div class="chart-card">
+        <h2>Fish by Water Type</h2>
+        <div class="chart-placeholder">
+          <canvas id="watertypeChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h2>Fish by Habitat</h2>
+        <div class="chart-placeholder">
+          <canvas id="habitatChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h2>Fish by Threatened Status</h2>
+        <div class="chart-placeholder">
+          <canvas id="threatenedChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    {{ water_labels|json_script:"water-labels" }}
+    {{ water_data|json_script:"water-data" }}
+
+    {{ habitat_labels|json_script:"habitat-labels" }}
+    {{ habitat_data|json_script:"habitat-data" }}
+
+    {{ threat_labels|json_script:"threat-labels" }}
+    {{ threat_data|json_script:"threat-data" }}
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/home_chart.js' %}"></script>
+  </section>
+
+  <!-- Features -->
+  <section class="card fadeup">
+    <h2>Platform Features</h2>
+
+    <div class="features-grid">
+      <div>
+        <h4>Fish Species Knowledge Base</h4>
+        <p>The system maintains a structured and searchable database of fish species commonly used in aquaculture. 
+          Each species entry includes essential biological and ecological information such as taxonomy, habitat preference, 
+          water type suitability, and conservation status. This centralized knowledge base helps users avoid ambiguity caused 
+          by multiple common names and provides consistent, reliable reference data for decision-making.</p>
+      </div>
+      <div>
+        <h4>Relationship Visualization</h4>
+        <p>Complex relationships between fish species, habitats, and food sources are represented using graphical visualizations. 
+          These relationship graphs allow users to explore how species are connected within the aquaculture ecosystem, making it 
+          easier to identify compatible species, shared habitats, and feeding patterns. This graphical representation enhances 
+          understanding beyond what traditional tables or lists can offer.</p>
+      </div>
+      <div>
+        <h4>Intelligent Food Recommendation System</h4>
+        <p>The platform provides food recommendations tailored to specific fish species and farming conditions. By combining fish 
+          species data with harvester-provided information such as farm type, water type, and scale of operation, the system predicts 
+          suitable feed options that support healthy growth and efficient farming. This reduces dependency on trial-and-error approaches 
+          and minimizes manual decision-making errors.</p>
+      </div>
+      <div>
+        <h4>Harvester Profile & Farm Context</h4>
+        <p>Each registered user maintains a profile containing farm-related details including farm type, farm size, and water conditions. 
+          This contextual information allows the system to personalize recommendations and ensures that insights are relevant to the user’s 
+          actual aquaculture environment. The profile also serves as a centralized view of user-specific data within the platform.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const slides = document.querySelectorAll(".carousel-slide");
+    let index = 0;
+
+    setInterval(() => {
+      slides[index].classList.remove("active");
+      index = (index + 1) % slides.length;
+      slides[index].classList.add("active");
+    }, 4000);
+  </script>
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "admin_base.html" %}
+
+{% block content %}
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+<section class="page-container">
+  {% if messages %}
+  {% for message in messages %}
+    {% if message.tags == "success" %}
+      <div class="flash-message {{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+  <div class="hero">
+    <h1>Add New Fish</h1>
+  </div>
+
+  <div class="card fish-summary-card fadeup">
+    <div class="fish-summary-right">
+        <h2>Add Fish Details</h2>
+        <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-grid">
+          
+          <div class="form-group">
+            <label>Fish Common Name</label>
+            <input type="text" name="common_name" placeholder="Enter Fish Common Name" required />
+          </div>
+
+          <div class="form-group">
+            <label>Fish Scientific Name</label>
+            <input type="text" name="scientific_name" placeholder="Enter Fish Scientific Name" required />
+          </div>
+
+          <div class="form-group">
+            <label>Water Type</label>
+            <select name="water_type" required>
+              <option value="">Select Water Type</option>
+              <option value="Freshwater">Freshwater</option>
+              <option value="Brackish">Brackish</option>
+              <option value="Marine">Marine</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Threatened Status</label>
+            <select name="threat_status" required>
+              <option value="">Select Threatened Status</option>
+              <option value="Least Concern">Least Concern</option>
+              <option value="Near Concern">Near Concern</option>
+              <option value="Vulnerable">Vulnerable</option>
+              <option value="Near Threatened">Near Threatened</option>
+              <option value="Endangered">Endangered</option>
+              <option value="Critically Endangered">Critically Endangered</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Taxonomy Family</label>
+            <input type="text" name="taxonomy" placeholder="Enter Fish Taxonomy" required />
+          </div>
+
+          <div class="form-group">
+            <label>Habitat</label>
+            <input type="text" name="habitat" placeholder="Enter Fish Habitat" required />
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="fish_desc" name="description" placeholder="Enter Fish Description" rows="2" cols="20" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <div>
+                <label>Fish Image</label>
+                <input type="file" id="imageInput" name="fish_img" class="file-input" accept="image/*" required />
+                <label for="imageInput" class="file-label">Upload Image from File</label>
+                <span id="fileName" class="file-name"></span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">
+            Add Fish
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <script>
+    document.getElementById("imageInput").addEventListener("change", function(){
+        const fileName = this.files[0] ? this.files[0].name : "No Files Selected";
+        document.getElementById("fileName").textContent = fileName;
+    });
+  </script>
+
+</section>
+
+{% endblock %}

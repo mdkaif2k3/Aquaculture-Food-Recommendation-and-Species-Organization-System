@@ -1,0 +1,82 @@
+{% extends 'base.html' %} 
+{% block content %} 
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+
+<div class="hero">
+  <h1>Orders Log</h1>
+</div>
+
+<div class="table-wrapper fadeup">
+  <table class="fish-table">
+    <tbody>
+      {% for log in page_obj %}
+      <tr class="fadeup">
+        <td class="fish-img-cell">
+          <div class="fish-img-card">
+            {% if log.fish.fish_img %}
+              <img src="{{ log.fish.fish_img.url }}" alt="{{ log.fish.common_name }}" width="100" height="100">
+            {% else %}
+              <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" width="100" height="100">
+            {% endif %}
+            {% if log.food.food_img %}
+              <img src="{{ log.food.food_img.url }}" alt="{{ log.food.food_name }}" width="100" height="100">
+            {% else %}
+              <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" width="100" height="100">
+            {% endif %}
+          </div>
+        </td>
+        <td>
+          <p class="common-name" style="font-weight: 700; font-size: x-large;">{{ log.fish.common_name }} - {{ log.recommended_food_name }}</p>
+          <p class="other-rows" style="font-weight: 700; font-size: large; font-style: italic;">Confidence: {{ log.confidence }}</p>
+          {% if log.status == True %}
+          <p class="other-rows" style="font-size: medium; font-style: italic;">Status: <font style="color: green">Accepted</font></p>
+          {% else %}
+          <p class="other-rows" style="font-size: medium; font-style: italic;">Status: <font style="color: brown">Pending</font></p>
+          {% endif %}
+        </td>
+        {% if log.status == False %}
+        <td class="button-row">
+          <center>
+            <form method="post" action="{% url 'request_cancel' %}">
+                {% csrf_token %}
+                <input type="hidden" name="log_id" value="{{ log.id }}">
+                <button type="submit" class="btn btn-outline btn-sm">
+                Cancel Order
+                </button>
+            </form>
+          </center>
+        </td>
+        {% else %}
+        <td class="button-row">
+          &nbsp;
+        </td>
+        {% endif %}
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="empty-row">No Requests available.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&water_type={{ request.GET.water_type }}">
+        < Previous
+      </a>
+    {% endif %}
+
+    <span class="page-info">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&water_type={{ request.GET.water_type }}">
+        Next >
+      </a>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

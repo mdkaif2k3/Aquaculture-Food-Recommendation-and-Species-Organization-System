@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+{% if messages %}
+  {% for message in messages %}
+    {% if message.tags == "success" %}
+      <div class="flash-message {{ message.tags }}">
+        {{ message }}
+      </div>
+    {% endif %}
+  {% endfor %}
+{% endif %}
+<section class="page-container">
+  <div class="hero">
+    <h1>Recommendation</h1>
+  </div>
+
+  <!-- Fish Summary Card -->
+  <div class="card fish-summary-card fadeup">
+    <div class="fish-summary-left">
+      {% if fish.fish_img %}
+        <img src="{{ fish.fish_img.url }}" alt="{{ fish.common_name }}" class="fish-summary-img" />
+      {% else %}
+        <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" class="fish-summary-img" />
+      {% endif %}
+    </div>
+
+    <div class="fish-summary-right">
+      <h2>{{ fish.common_name }}</h2>
+      <p class="scientific-name">{{ fish.scientific_name }}</p>
+
+        <form method="post">
+        {% csrf_token %}
+
+        <div class="form-grid">
+
+          <div class="form-group">
+            <label>Water Type</label>
+            <select name="farm_type" disabled required>
+              <option value="{{ fish.water_type }}">{{ fish.water_type }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Farm Type</label>
+            <select name="farm_type" required>
+              <option value="">Select farm type</option>
+              <option value="Pond" {% if request.POST.farm_type == "Pond" %}selected{% endif %}>Pond</option>
+              <option value="Tank" {% if request.POST.farm_type == "Tank" %}selected{% endif %}>Tank</option>
+              <option value="Cage" {% if request.POST.farm_type == "Cage" %}selected{% endif %}>Cage</option>
+              <option value="RAS" {% if request.POST.farm_type == "RAS" %}selected{% endif %}>RAS</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Farm Size</label>
+            <input type="number" step="0.1" value="{{ request.POST.farm_size|default:'' }}" name="farm_size" placeholder="e.g. 2.5 acres" required />
+          </div>
+
+          <div class="form-group">
+            <label>Water Temperature (°C)</label>
+            <input type="number" step="0.1" value="{{ request.POST.water_temperature|default:'' }}" name="water_temperature" placeholder="e.g. 28" required />
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn">
+            Get Recommendation
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  {% if show_result %}
+  <div class="card recommendation-result-card fadeup">
+    <h3 class="result-fish">Recommended Feed</h3>
+
+    <p class="result-fish">
+      For <strong>{{ fish.common_name }}:</strong>
+    </p>
+
+    <div class="result-box">
+      <div class="food-summary">
+        {% if food.food_img %}
+          <img src="{{ food.food_img.url }}" alt="{{ food.food_name }}" class="food-summary-img" />
+        {% else %}
+          <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" class="food-summary-img" />
+        {% endif %}
+      </div>
+      <h2 class="recommended-food">{{ recommended_food }}</h2>
+      <p class="confidence-text">
+        Confidence: {{ confidence|floatformat:2 }}%
+      </p>
+      <form method="post" action="{% url 'save_and_req' history.id fish.id %}">
+        {% csrf_token %}
+
+        <input type="hidden" name="farm_type_re" value="{{ request.POST.farm_type }}">
+        <input type="hidden" name="farm_size_re" value="{{ request.POST.farm_size }}">
+        <input type="hidden" name="water_temperature_re" value="{{ request.POST.water_temperature }}">
+        <input type="hidden" name="recommended_food" value="{{ recommended_food }}">
+        <input type="hidden" name="food_id" value="{{ food.id }}">
+        <input type="hidden" name="confidence" value="{{ confidence }}">
+
+        <button type="submit" class="btn">
+          Order Fish Food
+        </button>
+    </div>
+  </div>
+{% endif %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const message = document.querySelector(".flash-message");
+    if (message) {
+      message.classList.add("show");
+
+      setTimeout(() => {
+        message.style.opacity = "0";
+        message.style.transform = "translateX(-50%) translateY(-10px)";
+        setTimeout(() => message.remove(), 400);
+      }, 3000);
+    }
+  });
+</script>
+
+</section>
+
+{% endblock %}

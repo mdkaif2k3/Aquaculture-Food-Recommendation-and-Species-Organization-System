@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Aquaculture System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == "success" %}
+          <div class="flash-message {{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Login</h2>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <label>Username</label>
+          <input type="text" name="username" required />
+
+          <label>Password</label>
+          <input type="password" name="password" required />
+
+          <button type="submit" class="btn">Login</button>
+        </form>
+
+        <p class="auth-link">
+          Don’t have an account?
+          <a href="{% url 'register' %}">Register here</a>
+        </p>
+
+        {% for message in messages %}
+          {% if message.tags == 'error' %}
+            <p class="error">{{ message }}</p>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const message = document.querySelector(".flash-message");
+    if (message) {
+      message.classList.add("show");
+
+      setTimeout(() => {
+        message.style.opacity = "0";
+        message.style.transform = "translateX(-50%) translateY(-10px)";
+        setTimeout(() => message.remove(), 400);
+        }, 3000);
+      }
+    });
+  </script>
+  <div class="bubble-bg"></div>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Aquaculture System</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+  </head>
+  <body>
+    <div class="bubble-bg"></div>
+
+    <div class="auth-container">
+      <div class="auth-card">
+        <h2>Register</h2>
+
+        <form method="post">
+          {% csrf_token %}
+
+          <!-- Account info -->
+          <div class="form-row">
+            <div>
+              <label>Username</label>
+              <input type="text" name="username" required />
+            </div>
+            <div>
+              <label>Email</label>
+              <input type="email" name="email" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Password</label>
+              <input type="password" name="password1" required />
+            </div>
+            <div>
+              <label>Confirm</label>
+              <input type="password" name="password2" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Location</label>
+              <select name="location" class="location-select" required>
+                <option value="">Select Location</option>
+                <option value="Chennai, Tamil Nadu">Chennai, Tamil Nadu</option>
+                <option value="Bengaluru, Karnataka">Bengaluru, Karnataka</option>
+                <option value="Mumbai, Maharastra">Mumbai, Maharastra</option>
+                <option value="Hyderabad, Telangana">Hyderabad, Telangana</option>
+                <option value="Kolkata, West Bengal">Kolkata, West Bengal</option>
+                <option value="Delhi, NCR">Delhi, NCR</option>
+                <option value="Kochi, Kerala">Kochi, Kerala</option>
+                <option value="Ahmedabad, Gujarat">Ahmedabad, Gujarat</option>
+                <option value="Vishakapattinam, Andhra Pradesh">Vishakapattinam, Andhra Pradesh</option>
+                <option value="Lucknow, Uttar Pradesh">Lucknow, Uttar Pradesh</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn">Register</button>
+        </form>
+
+        <p class="auth-link">
+          Already have an account?
+          <a href="{% url 'login' %}">Login here</a>
+        </p>
+
+        {% for message in messages %}
+        <p class="error">{{ message }}</p>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>

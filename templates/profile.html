@@ -1,0 +1,87 @@
+{% extends 'base.html' %} 
+{% block content %}
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+<div class="dashboard">
+  <div class="hero">
+    <h2>Profile</h2>
+  </div>
+  <!-- Profile Info -->
+  <div class="card profile-card fadeup">
+    <h2>Harvester Information</h2>
+    <div class="content-section">
+      <div class="img-side">
+        <div class="profile-detail-image">
+          {% if img %}
+          <img src="{{ img.url }}"  width="250" height="300">
+          {% else %}
+          <img src="{% static 'img/user/default.png' %}"  width="250" height="300">
+          {% endif %}
+        </div>
+        <!---Hidden Form--->
+          <form method="POST" enctype="multipart/form-data" id="uploadForm">
+            {% csrf_token %}
+              <input type="file" name="profile_img" id="profileInput" accept="image/*" style="display: none;" />
+          </form>
+
+          <button class="btn img-change-btn" type="button" id="changeImg">Change Profile Image</button>
+      </div>
+      <div class="info-side">
+        <div class="profile-grid">
+          <div><strong>Username:</strong> <p>{{ username }}</p></div>
+          <div><strong>Email:</strong> <p>{{ email }}</p></div>
+          <div><strong>Location:</strong> <p>{{ location }}</p></div>
+          {% if last_duration == None %}
+            <div><strong>Last Login:</strong> <p>Just Now</p></div>
+          {% else %}
+            <div><strong>Last Login:</strong> <p>{{ last_duration }}</p></div>
+          {% endif %}
+        </div>
+        <div class="profile-actions">
+          <a href="{% url 'logout' %}" class="btn btn-outline logout-btn">
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="card fadeup">
+    <h3>Recent Activity</h3>
+
+    <ul class="activity-list">
+      {% for activity in history %}
+        {% if activity.action == 1 %}
+          <li><span>Viewed Fish Details For: <i><span class="activity-data">{{ activity.fish.common_name }}</span></i></span><span style="font-style: italic; font-weight: 500;">{{ activity.created_at|time:"H:i:s A" }}</span></li>
+        {% elif activity.action == 2 %}
+          <li><span>Got Food Recommendation For: <i><span class="activity-data">{{ activity.fish.common_name }}</span></i></span><span style="font-style: italic; font-weight: 500;">{{ activity.created_at|time:"H:i:s A" }}</span></li>
+        {% elif activity.action == 3 %}
+          <li><span>Ordered Fish Food For: <i><span class="activity-data">{{ activity.fish.common_name }}</span></i></span><span style="font-style: italic; font-weight: 500;">{{ activity.created_at|time:"H:i:s A" }}</span></li>
+        {% endif %}
+        {% empty %}
+          <center><strong>No Recent Activity</strong></center>
+      {% endfor %}
+    </ul>
+
+  </div>
+</div>
+<script>
+  const input = document.getElementById("profileInput");
+  const button = document.getElementById("changeImg");
+  const form = document.getElementById("uploadForm");
+
+  button.addEventListener("click", function(){
+    console.log("Input Clicked");
+    input.click();
+  });
+
+  input.addEventListener("change", function(){
+    if(input.files.length > 0){
+      console.log("Form Submitted");
+      form.submit();
+    }
+  });
+
+</script>
+{% endblock %}

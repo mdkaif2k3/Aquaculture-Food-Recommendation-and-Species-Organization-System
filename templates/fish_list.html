@@ -1,0 +1,93 @@
+{% extends template %}
+
+{% block content %} 
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+
+<div class="hero">
+  <h1>Fish Species</h1>
+</div>
+
+<div class="table-wrapper fadeup">
+  <form method="get" class="fish-filters fade-up">
+
+    <input type="text" name="q" placeholder="Search fish (common or scientific name)" value="{{ request.GET.q }}" class="search-input" />
+
+    <select name="water_type" class="filter-select">
+      <option value="">All Water Types</option>
+      <option value="Freshwater" {% if request.GET.water_type == "Freshwater" %}selected{% endif %}>
+        Freshwater
+      </option>
+      <option value="Brackish" {% if request.GET.water_type == "Brackish" %}selected{% endif %}>
+        Brackish
+      </option>
+      <option value="Marine" {% if request.GET.water_type == "Marine" %}selected{% endif %}>
+        Marine
+      </option>
+    </select>
+
+    <input type="submit" class="btn-outline btn-sm button-search" value="Search" />
+    <a href="{% url 'fish_list' %}" class="btn-outline btn-sm button-search">Reset</a>
+
+  </form>
+  <table class="fish-table">
+    <tbody>
+      {% for fish in page_obj %}
+      <tr class="fadeup">
+        <td class="fish-img-cell">
+          <div class="fish-img-card">
+            {% if fish.fish_img %}
+              <img src="{{ fish.fish_img.url }}" alt="{{ fish.common_name }}" width="200" height="200">
+            {% else %}
+              <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" width="200" height="200">
+            {% endif %}
+          </div>
+        </td>
+        <td>
+          <p class="common-name" style="font-weight: 700; font-size: x-large;">{{ fish.common_name }} - {{ fish.scientific_name }}</p>
+          <p class="other-rows" style="font-weight: 700; font-size: large; font-style: italic;">Family: {{ fish.taxonomy_family }}</p>
+          <p class="other-rows" style="font-size: medium;">Status: {{ fish.threatened_status }}</p>
+        </td>
+        <td class="button-row">
+          {% if request.session.user_id == 999 %}
+            <center>
+              <a href="{% url 'edit_fish' fish.id %}" class="btn btn-outline btn-sm">
+                Edit Fish Details
+              </a>
+            </center>
+          {% else %}
+            <center>
+              <a href="{% url 'fish_details' fish.id %}" class="btn btn-outline btn-sm">
+                View Details
+              </a>
+            </center>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="empty-row">No fish species available.</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}&water_type={{ request.GET.water_type }}">
+        < Previous
+      </a>
+    {% endif %}
+
+    <span class="page-info">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}&water_type={{ request.GET.water_type }}">
+        Next >
+      </a>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

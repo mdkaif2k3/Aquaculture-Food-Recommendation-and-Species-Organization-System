@@ -1,0 +1,76 @@
+{% extends "admin_base.html" %}
+
+{% block content %} 
+{% load static %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+
+<div class="hero">
+  <h1>User Profiles</h1>
+</div>
+
+<div class="table-wrapper fadeup">
+  <form method="get" class="fish-filters fade-up">
+
+    <input type="text" name="q" placeholder="Search username" value="{{ request.GET.q }}" class="search-input" />
+
+    <input type="submit" class="btn-outline btn-sm button-search" value="Search" />
+    <a href="{% url 'user_profiles' %}" class="btn-outline btn-sm button-search">Reset</a>
+
+  </form>
+  <table class="fish-table">
+    <tbody>
+      {% for user in page_obj %}
+      <tr class="fadeup">
+        <td class="fish-img-cell">
+          <div class="user-img-card">
+            {% if user.image %}
+              <img src="{{ user.image.url }}" alt="{{ user.username }}" width="250" height="300">
+            {% else %}
+              <img src="{% static 'img/user/default.png' %}" alt="No Image" width="300" height="350">
+            {% endif %}
+          </div>
+        </td>
+        <td>
+          <p class="user-rows"><strong>Username: </strong>{{ user.username }}</p>
+          <p class="user-rows"><strong>Email: </strong>{{ user.email }}</p>
+          <p class="user-rows"><strong>Created at: </strong>{{ user.created_at|date:"M d, Y - H:i" }}</p>
+        </td>
+        <td class="button-row">
+            <center>
+              <a href="{% url 'user_activation' user.id %}" class="btn btn-outline btn-sm">
+                {% if user.is_active == True %}
+                Deactivate User
+                {% else %}
+                Activate User
+                {% endif %}
+              </a>
+            </center>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="empty-row">No User Accounts</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}">
+        < Previous
+      </a>
+    {% endif %}
+
+    <span class="page-info">
+      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}">
+        Next >
+      </a>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

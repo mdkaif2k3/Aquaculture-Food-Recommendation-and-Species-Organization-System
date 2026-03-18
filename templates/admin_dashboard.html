@@ -1,0 +1,109 @@
+{% extends "admin_base.html" %}
+{% load static %}
+
+{% block content %}
+<script src="{% static 'js/scroll_fade.js' %}"></script>
+<style>
+  .card {
+    margin: 10px;
+  }
+  .hero {
+    margin-top: 0px;
+  }
+</style>
+<section class="admin-container fadeup">
+
+  <h1 class="hero">Welcome, Admin</h1>
+
+  <h2 class="admin-title">Admin Dashboard</h2>
+
+  <!-- Charts Row -->
+  <div class="admin-charts-row">
+
+    <div class=" card admin-chart-card">
+      <h3 style="margin: 0px;">Fish Species Distribution</h3>
+      <canvas id="fishPieChart" class="chart-canvas"></canvas>
+    </div>
+
+    <div class=" card admin-chart-card">
+      <h3 style="margin: 0px;">Users Registered Per Day</h3>
+      <canvas id="userBarChart"></canvas>
+    </div>
+
+    {{ water_labels|json_script:"water-labels" }}
+    {{ water_data|json_script:"water-data" }}
+
+    {{ user_dates|json_script:"user-dates" }}
+    {{ user_counts|json_script:"user-counts" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{% static 'js/admin_chart.js' %}"></script>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="admin-actions-section">
+    <h3>Quick Actions</h3>
+
+    <div class="admin-actions-row">
+
+      <a href="{% url 'add_fish' %}" class=" card admin-action-card">
+        <img src="{% static 'img/admin_img/add.png' %}" width="200" height="200">
+        Add New Fish
+      </a>
+
+      <a href="{% url 'fish_list' %}" class="card admin-action-card">
+        <img src="{% static 'img/admin_img/view.png' %}" width="200" height="200">
+        View Fish Species
+      </a>
+
+      <a href="{% url 'user_profiles' %}" class="card admin-action-card">
+        <img src="{% static 'img/admin_img/user_view.png' %}" width="200" height="200">
+        View Users
+      </a>
+
+    </div>
+  </div>
+
+  <!-- Pending Requests -->
+  <div class="admin-requests-section">
+    <h3>Pending Food Orders</h3>
+
+    {% for req in pending %}
+      <div class="card admin-request-card">
+        <div class="fish-img-card">
+          {% if req.fish.fish_img %}
+            <img src="{{ req.fish.fish_img.url }}" alt="{{ req.fish.common_name }}" width="200" height="200">
+          {% else %}
+            <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" width="200" height="200">
+          {% endif %}
+          {% if req.food.food_img %}
+            <img src="{{ req.food.food_img.url }}" alt="{{ req.food.food_name }}" width="200" height="200">
+          {% else %}
+            <img src="{% static 'img/fish_species/err.png' %}" alt="No Image" width="200" height="200">
+          {% endif %}
+        </div>
+        <div class="pending-info">
+          <div >
+            <p><strong>User:</strong> {{ req.user.username }} <br></p>
+            <p><strong>Fish:</strong> {{ req.fish.common_name }} <br></p>
+            <p><strong>Food:</strong> {{ req.recommended_food_name }} <br></p>
+          </div>
+          <div style="font-size: smaller; font-style: italic;">
+            <small>{{ req.created_at|date:"M d, Y - H:i" }}</small>
+          </div>
+        </div>
+        <div class="admin-request-actions">
+          <a href="{% url 'approve' req.id %}" class="btn">
+            Approve
+          </a>
+        </div>
+
+      </div>
+    {% empty %}
+      <div class="card" style="margin-bottom: 20px; text-align: center;"><p>No pending requests.</p></div>
+    {% endfor %}
+  </div>
+
+</section>
+
+{% endblock %}
